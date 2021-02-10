@@ -6,27 +6,28 @@
     android:layout_height="match_parent"
     tools:context=".MainFragment">
 
-
-    <EditText
-        android:id="@+id/edit"
-        android:layout_width="wrap_content"
+    <com.santalu.maskara.widget.MaskEditText
+        android:id="@+id/input"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:ems="10"
         android:inputType="number"
+        app:mask="__.___-___"
+        app:maskCharacter="_"
+        app:maskStyle="completable"
         app:layout_constraintBottom_toTopOf="@+id/btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
-    <Button
-        android:id="@+id/btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <Button
+            android:id="@+id/btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Button"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/input" />
+    </androidx.constraintlayout.widget.ConstraintLayout>

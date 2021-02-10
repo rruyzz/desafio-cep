@@ -46,4 +46,10 @@ dependencies {
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+
+    //Mascarac
+
+    implementation 'com.github.santalu:maskara:1.0.0'
+
+
 }
