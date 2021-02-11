@@ -16,6 +16,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.NavHostFragment
 import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.coroutines.*
+import okhttp3.OkHttp
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import org.w3c.dom.Text
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -51,6 +54,7 @@ class MainFragment : Fragment() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 btn.isEnabled = input.length() == 10
+
                 if (isUpdating){
                     isUpdating = false
                     return
@@ -80,7 +84,6 @@ class MainFragment : Fragment() {
             getCep(cep)
 //            navigate()
         }
-
     }
 
     private fun navigate() {
@@ -93,9 +96,13 @@ class MainFragment : Fragment() {
 
 
     private fun getCep(cep: String){
+
+        val logger = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+        val okHttp = OkHttpClient.Builder().addInterceptor(logger)
         val retrofit = Retrofit.Builder()
             .baseUrl("https://viacep.com.br/ws/")
             .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttp.build())
             .build().create(Service::class.java)
 
         GlobalScope.launch (Dispatchers.IO){
@@ -110,6 +117,5 @@ class MainFragment : Fragment() {
     private fun unMask(s: String) : String {
         return s.replace(".","").replace("-","")
     }
-
 
 }
