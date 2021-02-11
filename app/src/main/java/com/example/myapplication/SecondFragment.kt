@@ -22,13 +22,6 @@ class SecondFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         var cep = arguments?.getString("cep")
-//        unMask(cep)
         tv.text = cep.toString()
     }
-//    fun unMask (s: String?):String?{
-//        s.dele
-//        s?.removeSuffix("-")
-//        return s
-//    }
-
 }
