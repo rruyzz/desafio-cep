@@ -3,7 +3,7 @@ package com.example.myapplication
 import java.io.Serializable
 
 data class Endereco(
-    val cep: Int,
+    val cep: String,
     val logradouro: String,
     val complemento: String,
     val bairro: String,
