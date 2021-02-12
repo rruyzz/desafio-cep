@@ -1,7 +1,9 @@
 package com.example.myapplication
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 import java.io.Serializable
-
+@Parcelize
 data class Endereco(
     val cep: String,
     val logradouro: String,
@@ -12,4 +14,4 @@ data class Endereco(
     val ibge: Int,
     val gia: Int,
     val ddd: Int,
-    val siafi: Int)
+    val siafi: Int) : Parcelable

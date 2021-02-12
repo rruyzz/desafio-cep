@@ -21,7 +21,7 @@ class SecondFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        var cep = arguments?.getString("cep")
-        tv.text = cep.toString()
+        val adress = arguments?.getString("adress")
+        tvBairro.text = adress
     }
 }

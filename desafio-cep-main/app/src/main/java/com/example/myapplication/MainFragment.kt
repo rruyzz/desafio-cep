@@ -7,27 +7,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import androidx.core.os.bundleOf
-import androidx.core.view.isVisible
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import kotlinx.android.synthetic.main.fragment_main.*
-import kotlinx.coroutines.*
-import okhttp3.OkHttp
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import org.json.JSONObject
-import org.w3c.dom.Text
-import retrofit2.Call
-import retrofit2.Retrofit
-import retrofit2.awaitResponse
-import retrofit2.converter.gson.GsonConverterFactory
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 
 class MainFragment : Fragment() {
 
@@ -91,16 +78,21 @@ class MainFragment : Fragment() {
         btn.setOnClickListener {
             cep = input.text.toString()
             cep = unMask(cep)
-            adress = viewModel.getEndereco(cep)
+            runBlocking {
+                adress = viewModel.getEndereco(cep)
+                delay(5000)
+            }
+            navigate(adress)
         }
     }
 
-    private fun navigate() {
-        var cep = input.text.toString()
-        cep = cep.replace(".", "").replace("-", "")
-        var bundle = bundleOf("cep" to cep)
-        NavHostFragment.findNavController(this)
-            .navigate(R.id.action_mainFragment_to_secondFragment, bundle)
+    private fun navigate(adress: MutableLiveData<Endereco>) {
+//        val currentAdress : Endereco = adress.value!!
+        val action = MainFragmentDirections.actionMainFragmentToSecondFragment()
+        findNavController().navigate(action)
+//        var bundle = bundleOf("adress" to adress.value?.bairro)
+//        NavHostFragment.findNavController(this)
+//            .navigate(R.id.action_mainFragment_to_secondFragment)
     }
 
     private fun unMask(s: String) : String {
