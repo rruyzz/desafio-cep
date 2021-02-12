@@ -81,6 +81,10 @@ class MainFragment : Fragment() {
         })
 
         btn.setOnClickListener {
+            progressBar.visibility = View.VISIBLE
+            textInputLayout3.visibility = View.INVISIBLE
+            btn.visibility = View.INVISIBLE
+            input.visibility = View.INVISIBLE
             cep = input.text.toString()
             cep = unMask(cep)
             adress = viewModel.getEndereco(cep)
