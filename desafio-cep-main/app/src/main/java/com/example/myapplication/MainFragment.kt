@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -22,7 +23,7 @@ class MainFragment : Fragment() {
     lateinit var cep: String
 
     private val viewModel by viewModels<MainView> {
-        object : ViewModelProvider.Factory{
+        object : ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
                 return MainView(service) as T
             }
@@ -40,7 +41,7 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        input.addTextChangedListener(object : TextWatcher{
+        input.addTextChangedListener(object : TextWatcher {
             var isUpdating = false
             override fun afterTextChanged(s: Editable?) {
             }
@@ -51,17 +52,17 @@ class MainFragment : Fragment() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 btn.isEnabled = input.length() == 10
 
-                if (isUpdating){
+                if (isUpdating) {
                     isUpdating = false
                     return
                 }
                 val hasMask = s.toString().indexOf('.') > -1 || s.toString().indexOf('-') > -1
-                var str = s.toString().filterNot{ it =='.' || it == '-'}
-                if (count> before){
-                    if(str.length > 5 ){
-                        str= "${str.substring(0,2)}.${str.substring(2,5)}-${str.substring(5)}"
-                    } else if (str.length>2){
-                        str= "${str.substring(0,2)}.${str.substring(2)}"
+                var str = s.toString().filterNot { it == '.' || it == '-' }
+                if (count > before) {
+                    if (str.length > 5) {
+                        str = "${str.substring(0, 2)}.${str.substring(2, 5)}-${str.substring(5)}"
+                    } else if (str.length > 2) {
+                        str = "${str.substring(0, 2)}.${str.substring(2)}"
                     }
                     isUpdating = true
                     input.setText(str)
@@ -69,8 +70,12 @@ class MainFragment : Fragment() {
                 } else {
                     isUpdating = true
                     input.setText(str)
-                    input.setSelection(Math.max(0,
-                        Math.min(if (hasMask) start - before else start, str.length)))
+                    input.setSelection(
+                        Math.max(
+                            0,
+                            Math.min(if (hasMask) start - before else start, str.length)
+                        )
+                    )
                 }
             }
         })
@@ -78,26 +83,25 @@ class MainFragment : Fragment() {
         btn.setOnClickListener {
             cep = input.text.toString()
             cep = unMask(cep)
-            runBlocking {
-                adress = viewModel.getEndereco(cep)
-                delay(5000)
-            }
-            navigate(adress)
+            adress = viewModel.getEndereco(cep)
+            viewModel.adress.observe(viewLifecycleOwner, Observer {
+                navigate(adress.value!!)
+            })
         }
     }
 
-    private fun navigate(adress: MutableLiveData<Endereco>) {
-//        val currentAdress : Endereco = adress.value!!
-        val action = MainFragmentDirections.actionMainFragmentToSecondFragment()
+    private fun navigate(adress: Endereco) {
+        val action = MainFragmentDirections.actionMainFragmentToSecondFragment(adress)
         findNavController().navigate(action)
 //        var bundle = bundleOf("adress" to adress.value?.bairro)
 //        NavHostFragment.findNavController(this)
 //            .navigate(R.id.action_mainFragment_to_secondFragment)
     }
 
-    private fun unMask(s: String) : String {
-        return s.replace(".","").replace("-","")
+    private fun unMask(s: String): String {
+        return s.replace(".", "").replace("-", "")
     }
+
 
 }
 

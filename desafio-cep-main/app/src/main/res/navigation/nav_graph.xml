@@ -18,5 +18,9 @@
         android:id="@+id/secondFragment"
         android:name="com.example.myapplication.SecondFragment"
         android:label="fragment_second"
-        tools:layout="@layout/fragment_second"/>
+        tools:layout="@layout/fragment_second">
+        <argument
+            android:name="adresss"
+            app:argType="com.example.myapplication.Endereco" />
+    </fragment>
 </navigation>
