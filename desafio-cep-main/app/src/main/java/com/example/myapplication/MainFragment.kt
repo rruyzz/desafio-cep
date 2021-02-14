@@ -7,11 +7,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.coroutines.delay
@@ -89,7 +91,9 @@ class MainFragment : Fragment() {
             cep = unMask(cep)
             adress = viewModel.getEndereco(cep)
             viewModel.adress.observe(viewLifecycleOwner, Observer {
-                navigate(adress.value!!)
+                val data : Endereco
+                data = adress.value!!
+                navigate(data)
             })
         }
     }
@@ -97,9 +101,9 @@ class MainFragment : Fragment() {
     private fun navigate(adress: Endereco) {
         val action = MainFragmentDirections.actionMainFragmentToSecondFragment(adress)
         findNavController().navigate(action)
-//        var bundle = bundleOf("adress" to adress.value?.bairro)
+//        var bundle = bundleOf("adress" to adress)
 //        NavHostFragment.findNavController(this)
-//            .navigate(R.id.action_mainFragment_to_secondFragment)
+//            .navigate(R.id.action_mainFragment_to_secondFragment, bundle)
     }
 
     private fun unMask(s: String): String {

@@ -12,6 +12,7 @@ import kotlinx.android.synthetic.main.fragment_second.*
 class SecondFragment : Fragment() {
 
 //    private val currentAdress: SecondFragmentArg
+    private val currentAdress: SecondFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -23,7 +24,11 @@ class SecondFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val adress = arguments?.getString("adress")
-        tvBairro.text = adress
+        val adress = currentAdress.adresss
+        tvBairro.text = adress.bairro
+        tvCep.text = adress.cep
+        tvLogadouro.text = adress.logradouro
+//        val adress = arguments?.getString("adress")
+//        tvBairro.text = adress.
     }
 }
