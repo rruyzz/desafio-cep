@@ -5,13 +5,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.OnBackPressedDispatcherOwner
+import androidx.activity.addCallback
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import kotlinx.android.synthetic.main.fragment_second.*
 
 
 class SecondFragment : Fragment() {
 
-//    private val currentAdress: SecondFragmentArg
     private val currentAdress: SecondFragmentArgs by navArgs()
 
     override fun onCreateView(
@@ -28,7 +31,12 @@ class SecondFragment : Fragment() {
         tvBairro.text = adress.bairro
         tvCep.text = adress.cep
         tvLogadouro.text = adress.logradouro
-//        val adress = arguments?.getString("adress")
-//        tvBairro.text = adress.
+
+        val callback = object : OnBackPressedCallback(true){
+            override fun handleOnBackPressed() {
+                findNavController().navigate(R.id.action_secondFragment_to_mainFragment)
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(callback)
     }
 }

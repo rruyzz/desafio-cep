@@ -23,6 +23,7 @@ class MainFragment : Fragment() {
 
     lateinit var adress: MutableLiveData<Endereco>
     lateinit var cep: String
+    lateinit var data : Endereco
 
     private val viewModel by viewModels<MainView> {
         object : ViewModelProvider.Factory {
@@ -42,7 +43,6 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         input.addTextChangedListener(object : TextWatcher {
             var isUpdating = false
             override fun afterTextChanged(s: Editable?) {
@@ -82,53 +82,28 @@ class MainFragment : Fragment() {
             }
         })
 
+        viewModel.adress.observe(viewLifecycleOwner, Observer {
+            navigate(adress.value!!)
+        })
+
         btn.setOnClickListener {
+            cep = input.text.toString()
+            cep = unMask(cep)
+            adress = viewModel.getEndereco(cep)
             progressBar.visibility = View.VISIBLE
             textInputLayout3.visibility = View.INVISIBLE
             btn.visibility = View.INVISIBLE
             input.visibility = View.INVISIBLE
-            cep = input.text.toString()
-            cep = unMask(cep)
-            adress = viewModel.getEndereco(cep)
-            viewModel.adress.observe(viewLifecycleOwner, Observer {
-                val data : Endereco
-                data = adress.value!!
-                navigate(data)
-            })
         }
     }
 
     private fun navigate(adress: Endereco) {
         val action = MainFragmentDirections.actionMainFragmentToSecondFragment(adress)
         findNavController().navigate(action)
-//        var bundle = bundleOf("adress" to adress)
-//        NavHostFragment.findNavController(this)
-//            .navigate(R.id.action_mainFragment_to_secondFragment, bundle)
     }
 
     private fun unMask(s: String): String {
         return s.replace(".", "").replace("-", "")
     }
 
-
 }
-
-//    private fun getCep(cep: String){
-//
-//        val logger = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
-//        val okHttp = OkHttpClient.Builder().addInterceptor(logger)
-//        val retrofit = Retrofit.Builder()
-//            .baseUrl("https://viacep.com.br/ws/")
-//            .addConverterFactory(GsonConverterFactory.create())
-//            .client(okHttp.build())
-//            .build().create(Service::class.java)
-//
-//        GlobalScope.launch (Dispatchers.IO){
-//            val response = retrofit.getEndereco(cep).awaitResponse()
-//            val adress = response.body()!!
-//            withContext(Dispatchers.Main){
-//                tv.text = adress.logradouro
-//            }
-//        }
-//    }
-//tv.text = adress.value?.logradouro

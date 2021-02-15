@@ -22,5 +22,8 @@
         <argument
             android:name="adresss"
             app:argType="com.example.myapplication.Endereco" />
+        <action
+            android:id="@+id/action_secondFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
     </fragment>
 </navigation>
