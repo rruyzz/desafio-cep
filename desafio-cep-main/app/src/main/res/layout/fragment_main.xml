@@ -35,7 +35,8 @@
             android:id="@+id/input"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:inputType="number"/>
+            android:inputType="phone"
+            android:maxLength="9"/>
 <!--            app:mask="__.___-___"-->
 <!--            app:maskCharacter="_"-->
 <!--            app:maskStyle="normal" -->

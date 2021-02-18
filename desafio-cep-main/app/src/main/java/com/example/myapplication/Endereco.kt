@@ -8,7 +8,8 @@ data class Endereco(
     var cep: String,
     var logradouro: String,
     var complemento: String,
-    var bairro: String
+    var bairro: String,
+    var erro: Boolean
 //    val localidade: String,
 //    val uf: String,
 //    val ibge: Int,

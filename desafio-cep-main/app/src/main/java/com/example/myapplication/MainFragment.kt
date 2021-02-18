@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
@@ -15,9 +17,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
+import com.redmadrobot.inputmask.MaskedTextChangedListener
 import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+import android.widget.Toast.makeText as makeText1
 
 class MainFragment : Fragment() {
 
@@ -43,47 +47,17 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        input.addTextChangedListener(object : TextWatcher {
-            var isUpdating = false
-            override fun afterTextChanged(s: Editable?) {
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                btn.isEnabled = input.length() == 10
-
-                if (isUpdating) {
-                    isUpdating = false
-                    return
-                }
-                val hasMask = s.toString().indexOf('.') > -1 || s.toString().indexOf('-') > -1
-                var str = s.toString().filterNot { it == '.' || it == '-' }
-                if (count > before) {
-                    if (str.length > 5) {
-                        str = "${str.substring(0, 2)}.${str.substring(2, 5)}-${str.substring(5)}"
-                    } else if (str.length > 2) {
-                        str = "${str.substring(0, 2)}.${str.substring(2)}"
-                    }
-                    isUpdating = true
-                    input.setText(str)
-                    input.setSelection(input.text?.length ?: 0)
-                } else {
-                    isUpdating = true
-                    input.setText(str)
-                    input.setSelection(
-                        Math.max(
-                            0,
-                            Math.min(if (hasMask) start - before else start, str.length)
-                        )
-                    )
-                }
-            }
-        })
+        input.setCepMask()
 
         viewModel.adress.observe(viewLifecycleOwner, Observer {
-            navigate(adress.value!!)
+            if(adress.value!!.erro == true){
+//                Toast.makeText(this, "CEP INVALIDO", Toast.LENGTH_LONG).show()
+
+                tv.text = "erro"
+            }else {
+                navigate(adress.value!!)
+            }
+
         })
 
         btn.setOnClickListener {
@@ -100,6 +74,32 @@ class MainFragment : Fragment() {
     private fun navigate(adress: Endereco) {
         val action = MainFragmentDirections.actionMainFragmentToSecondFragment(adress)
         findNavController().navigate(action)
+    }
+
+    private fun EditText.setCepMask() {
+        val editText = this
+        val listener = object : MaskedTextChangedListener("[00000]-[000]", editText) {
+            override fun afterTextChanged(edit: Editable?) {
+                try {
+                    super.afterTextChanged(edit)
+                } catch (e: Exception) {
+                    editText.addTextChangedListener(this)
+                    editText.onFocusChangeListener = this
+                }
+            }
+
+            override fun onTextChanged(
+                text: CharSequence,
+                cursorPosition: Int,
+                before: Int,
+                count: Int
+            ) {
+                super.onTextChanged(text, cursorPosition, before, count)
+                btn.isEnabled = input.length() == 9
+            }
+        }
+        editText.addTextChangedListener(listener)
+        editText.onFocusChangeListener = listener
     }
 
     private fun unMask(s: String): String {
